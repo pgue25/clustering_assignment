@@ -1,0 +1,5 @@
+segment,age,visits_per_month,avg_visit_minutes,classes_per_month,months_member,n_train,train_avg_extras_spend
+Newcomers,27.33,3.04,40.7,0.89,5.76,46,8.98
+Seasoned Regulars,64.16,11.96,46.53,3.87,57.82,45,17.36
+Solo Grinders,33.2,16.05,64.31,0.9,30.12,80,25.26
+Class Enthusiasts,42.68,9.32,55.17,7.02,24.05,60,47.2

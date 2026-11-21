@@ -1,0 +1,5 @@
+segment,members,age,visits_per_month,avg_visit_minutes,classes_per_month,months_member,avg_extras_spend,pct_spend_under_20,gets_credit,net_baseline,net_v1
+Newcomers,70,27.6,3.1,40.4,0.9,6.3,9.3,84.3,True,185.0,185.0
+Seasoned Regulars,60,64.0,12.0,47.0,3.9,58.7,16.4,61.7,False,-45.0,0.0
+Solo Grinders,110,33.3,16.1,64.3,1.0,29.8,24.9,39.1,False,-455.0,0.0
+Class Enthusiasts,90,41.9,9.0,55.4,7.0,22.9,46.8,1.1,False,-885.0,0.0
