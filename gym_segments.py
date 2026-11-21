@@ -198,3 +198,38 @@ summary.to_csv(OUT / "value_summary.csv", index=False)
 print("\nMonthly net from the credit:")
 print(summary.to_string(index=False))
 print(f"Improvement: ${nv - nb:+,.0f} per month (${(nv - nb) * 12:+,.0f} per year)")
+
+# ---------------------------------------------------------------- Segment chart
+# Members colored by segment; red dots = segment centers (the "average member"
+# fitted on the training set). Orange is skipped so no segment color is near red.
+SEG_COLORS = {"Newcomers": "#2a78d6", "Seasoned Regulars": "#1baf7a",
+              "Solo Grinders": "#eda100", "Class Enthusiasts": "#e87ba4"}
+rng = np.random.default_rng(SEED)
+jit = lambda s, w: s + rng.uniform(-w, w, len(s))   # spreads out whole-number ties
+
+panels = [("visits_per_month", "classes_per_month", "Visits per month", "Classes per month"),
+          ("age", "months_member", "Age", "Months a member")]
+fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+for ax, (xc, yc, xl, yl) in zip(axes, panels):
+    for name, color in SEG_COLORS.items():
+        m = df[df["segment"] == name]
+        ax.scatter(jit(m[xc], 0.3), jit(m[yc], 0.3), s=28, color=color, alpha=0.75,
+                   edgecolor="white", linewidth=0.6, label=f"{name} ({len(m)})")
+    ax.scatter(centers[xc], centers[yc], s=180, color="red", edgecolor="white",
+               linewidth=2, zorder=5, label="Segment center")
+    for _, c in centers.iterrows():
+        ax.annotate(c["segment"], (c[xc], c[yc]), xytext=(9, 9),
+                    textcoords="offset points", fontsize=10, fontweight="bold",
+                    color="#222222", zorder=6,
+                    bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.85))
+    ax.set_xlabel(xl)
+    ax.set_ylabel(yl)
+    ax.grid(alpha=0.25)
+    for side in ("top", "right"):
+        ax.spines[side].set_visible(False)
+handles, labels = axes[0].get_legend_handles_labels()
+fig.legend(handles, labels, loc="lower center", ncol=5, frameon=False, fontsize=10)
+fig.suptitle("Four member segments (all 330 members); red dots are segment centers")
+fig.tight_layout(rect=(0, 0.07, 1, 1))
+fig.savefig(OUT / "segments_scatter.png", dpi=200)
+print(f"\nSaved {OUT / 'segments_scatter.png'}")

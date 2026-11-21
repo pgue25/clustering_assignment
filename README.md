@@ -46,6 +46,10 @@ The elbow is at k = 4 on both curves. On members the model never saw, the test s
 
 ## Segments (all 330 members assigned with the fitted model)
 
+![segments](outputs/segments_scatter.png)
+
+Red dots are the segment centers (the average member of each segment, fitted on the training set). Points are jittered slightly so members with identical whole-number values don't stack.
+
 | | Newcomers | Seasoned Regulars | Solo Grinders | Class Enthusiasts |
 |---|---|---|---|---|
 | Members | 70 | 60 | 110 | 90 |
@@ -81,4 +85,5 @@ Targeting turns the credit from a $1,200/month loss into a $185/month gain, whic
 ## Files
 - `gym_segments.py`: the full analysis
 - `outputs/elbow_train_test.png`, `outputs/elbow_combined.png`: elbow plots
+- `outputs/segments_scatter.png`: members colored by segment, with red dots for segment centers
 - `outputs/spread_by_k.csv`, `cluster_centers.csv`, `segment_table.csv`, `value_summary.csv`, `member_assignments.csv`
