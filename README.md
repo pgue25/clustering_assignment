@@ -87,4 +87,5 @@ Targeting turns the credit from a $1,200/month loss into a $185/month gain, whic
 - `outputs/elbow_train_test.png`, `outputs/elbow_combined.png`: elbow plots
 - `outputs/segments_scatter.png`: members colored by segment, with red dots for segment centers
 - `outputs/value_baseline_vs_v1.png`: monthly net from the credit, baseline vs v1
+- `outputs/segment_table.png`: segment table for the slides (members, traits, extras spend, credit, new member)
 - `outputs/spread_by_k.csv`, `cluster_centers.csv`, `segment_table.csv`, `value_summary.csv`, `member_assignments.csv`

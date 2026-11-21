@@ -257,3 +257,62 @@ for side in ("top", "right"):
 fig.tight_layout()
 fig.savefig(OUT / "value_baseline_vs_v1.png", dpi=200)
 print(f"Saved {OUT / 'value_baseline_vs_v1.png'}")
+
+# ---------------------------------------------------------------- Segment table image
+order = ["Newcomers", "Seasoned Regulars", "Solo Grinders", "Class Enthusiasts"]
+t = seg_table.loc[order]
+traits = {
+    "Newcomers": [f"Age {t.loc['Newcomers', 'age']:.0f}",
+                  f"{t.loc['Newcomers', 'visits_per_month']:.0f} visits/month",
+                  f"Joined {t.loc['Newcomers', 'months_member']:.0f} months ago"],
+    "Seasoned Regulars": [f"Age {t.loc['Seasoned Regulars', 'age']:.0f}",
+                          f"Member ~{t.loc['Seasoned Regulars', 'months_member'] / 12:.0f} years",
+                          f"{t.loc['Seasoned Regulars', 'visits_per_month']:.0f} visits/month"],
+    "Solo Grinders": [f"{t.loc['Solo Grinders', 'visits_per_month']:.0f} visits/month",
+                      f"{t.loc['Solo Grinders', 'avg_visit_minutes']:.0f}-minute visits",
+                      "Almost no classes"],
+    "Class Enthusiasts": [f"{t.loc['Class Enthusiasts', 'classes_per_month']:.0f} classes/month",
+                          f"Age {t.loc['Class Enthusiasts', 'age']:.0f}",
+                          f"{t.loc['Class Enthusiasts', 'visits_per_month']:.0f} visits/month"],
+}
+row_labels = ["Members", "Defining traits", "Avg extras spend", "Gets $10 credit?"]
+cells = [
+    [f"{int(t.loc[s, 'members'])}" for s in order],
+    ["\n".join(traits[s]) for s in order],
+    [f"${t.loc[s, 'avg_extras_spend']:.0f}/month" for s in order],
+    ["Yes" if t.loc[s, "gets_credit"] else "No" for s in order],
+]
+
+# Drawn cell by cell so column widths and row heights are exact (units = inches)
+col_w = [2.2] + [2.3] * 4
+row_hgt = [0.5, 0.45, 1.05, 0.45, 0.45]           # header, then the four rows
+W, H, cap_h = sum(col_w), sum(row_hgt), 0.5
+fig = plt.figure(figsize=(W + 0.2, H + cap_h + 0.2))
+ax = fig.add_axes([0, 0, 1, 1])
+ax.set_xlim(-0.1, W + 0.1)
+ax.set_ylim(-cap_h - 0.1, H + 0.1)
+ax.axis("off")
+grid = [[""] + order] + [[lab] + row for lab, row in zip(row_labels, cells)]
+y = H
+for r, rh in enumerate(row_hgt):
+    x = 0
+    for c, cw in enumerate(col_w):
+        header = r == 0
+        if not (header and c == 0):
+            ax.add_patch(plt.Rectangle((x, y - rh), cw, rh, facecolor="#eeeeee" if header else "white",
+                                       edgecolor="#999999", linewidth=1))
+        bold = header or c == 0 or (r == 4 and grid[r][c] == "Yes")
+        ax.text(x + (0.12 if c == 0 else cw / 2), y - rh / 2, grid[r][c],
+                ha="left" if c == 0 else "center", va="center", fontsize=13,
+                fontweight="bold" if bold else "normal", linespacing=1.5)
+        x += cw
+    y -= rh
+nm = new_member
+ax.text(0, -cap_h / 2,
+        f"New member (age {nm['age']}, {nm['visits_per_month']} visits/month, "
+        f"{nm['avg_visit_minutes']} min/visit, {nm['classes_per_month']} class/month, "
+        f"{nm['months_member']} months, ${nm['monthly_extras_spend']} extras) "
+        f"\u2192 {seg}: {'gets' if credit else 'no'} credit",
+        fontsize=12, va="center")
+fig.savefig(OUT / "segment_table.png", dpi=200, bbox_inches="tight")
+print(f"Saved {OUT / 'segment_table.png'}")
