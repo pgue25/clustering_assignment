@@ -8,6 +8,7 @@ Outputs go to ./outputs (elbow plot, centers, segment table, member assignments)
 from pathlib import Path
 
 import matplotlib
+import matplotlib.ticker
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -233,3 +234,26 @@ fig.suptitle("Four member segments (all 330 members); red dots are segment cente
 fig.tight_layout(rect=(0, 0.07, 1, 1))
 fig.savefig(OUT / "segments_scatter.png", dpi=200)
 print(f"\nSaved {OUT / 'segments_scatter.png'}")
+
+# ---------------------------------------------------------------- Value chart
+n_v1 = int(df["gets_credit_v1"].sum())
+fig, ax = plt.subplots(figsize=(6.5, 4))
+plans = ["Baseline:\ncredit to everyone", "v1:\ncredit to Newcomers only"]
+vals = [nb, nv]
+bars = ax.bar(plans, vals, width=0.5, color=["#bbbbbb", "#1f4e79"])
+labels = [f"-${abs(nb):,.0f}/month\n{len(df)} members credited",
+          f"+${nv:,.0f}/month\n{n_v1} members credited"]
+for b, v, lab in zip(bars, vals, labels):
+    ax.annotate(lab, (b.get_x() + b.get_width() / 2, v), ha="center",
+                va="top" if v < 0 else "bottom", xytext=(0, -6 if v < 0 else 6),
+                textcoords="offset points", fontsize=11)
+ax.axhline(0, color="black", linewidth=1)
+ax.set_ylabel("Gym's monthly net from the \\$10 credit")
+ax.set_ylim(-1700, 700)
+ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(
+    lambda x, _: f"-${abs(x):,.0f}" if x < 0 else f"${x:,.0f}"))
+for side in ("top", "right"):
+    ax.spines[side].set_visible(False)
+fig.tight_layout()
+fig.savefig(OUT / "value_baseline_vs_v1.png", dpi=200)
+print(f"Saved {OUT / 'value_baseline_vs_v1.png'}")
